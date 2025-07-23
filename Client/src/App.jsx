@@ -4,6 +4,11 @@ import "./App.css";
 import { Route, Routes } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import BlogPage from "./pages/BlogPage";
+import Layout from "./pages/admin/Layout";
+import Dashboard from "./pages/admin/Dashboard";
+import AddBlog from "./pages/admin/AddBlog";
+import ListBlog from "./pages/admin/ListBlog";
+import Comments from "./pages/admin/Comments";
 
 function App() {
   return (
@@ -12,6 +17,12 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/blog/:id" element={<BlogPage />} />
+          <Route path="/admin" element={<Layout />}> 
+            <Route index element={<Dashboard />} />
+            <Route path="addBlog" element={<AddBlog />} />
+            <Route path="listBlog" element={<ListBlog />} />
+            <Route path="comments" element={<Comments />} />
+          </Route>
         </Routes>
       </div>
     </>
