@@ -1,8 +1,11 @@
 import express from "express";
 import "dotenv/config";
 import cors from "cors";
+import connectToDB from "./configs/db.js";
 
 const app = express();
+
+await connectToDB();
 const PORT = process.env.PORT || 5050;
 //middleware
 app.use(cors());
