@@ -80,6 +80,7 @@ function AddBlog() {
 
         <p className="mt-4">Blog category</p>
         <select
+          onChange={(e) => setCategory(e.target.value)}
           name="category"
           className="mt-2 px-3 py-2 border text-gray-500 border-gray-300 outline-none rounded"
         >
@@ -92,6 +93,17 @@ function AddBlog() {
             );
           })}
         </select>
+
+        {/* Button */}
+        <div className=" mt-5 p-4">
+          <p>Publish Now</p>
+          <input
+            type="chechbox"
+            name="checkbox"
+            checked={isPublished}
+            className="scale-125 cursor-pointer"
+          />
+        </div>
       </div>
     </form>
   );
