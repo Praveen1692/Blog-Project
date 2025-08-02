@@ -12,7 +12,11 @@ import Comments from "./pages/admin/Comments";
 import Login from "./components/admin/Login";
 import "quill/dist/quill.snow.css";
 import { Toaster } from "react-hot-toast";
+import { useAppContext } from "./context/AppContext";
 function App() {
+  const { token } = useAppContext();
+  console.log("Frontend Token", token);
+
   return (
     <>
       <div>
@@ -20,7 +24,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/blog/:id" element={<BlogPage />} />
-          <Route path="/admin" element={true ? <Layout /> : <Login />}>
+          <Route path="/admin" element={token ? <Layout /> : <Login />}>
             <Route index element={<Dashboard />} />
             <Route path="addBlog" element={<AddBlog />} />
             <Route path="listBlog" element={<ListBlog />} />
