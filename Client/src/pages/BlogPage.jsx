@@ -5,10 +5,14 @@ import Navbar from "../components/Navbar";
 import Moment from "moment";
 import Footer from "../components/Footer";
 import Loader from "../components/Loader";
+import { useAppContext } from "../context/AppContext";
+import toast from "react-hot-toast";
 
 function BlogPage() {
   const { id } = useParams();
   console.log("id", id);
+
+  const { axios } = useAppContext();
 
   const [data, setData] = useState([]);
   const [error, setError] = useState(null);
@@ -18,16 +22,24 @@ function BlogPage() {
 
   const fetchBlogData = async () => {
     try {
-      const data = blog_data.find((item) => item._id === id);
-      setData(data);
-      console.log("Blog Data is", data);
+      const { data } = await axios.get(`/api/blog/${id}`);
+      data?.success ? setData(data.blog) : toast.error("Something went wrong!");
     } catch (error) {
-      setError(error);
+      toast.error(error.message);
     }
   };
 
   const fetchComments = async () => {
-    setComments(comments_data);
+    try {
+      const { data } = await axios.post("/api/blog/comments", { blogId: id });
+      console.log("Comment darta", data);
+
+      data?.success
+        ? setComments(data.comments)
+        : toast.error("Something went wrong commenrt!");
+    } catch (error) {
+      toast.error("Something went wrong to loading comments");
+    }
   };
 
   useEffect(() => {
@@ -41,7 +53,28 @@ function BlogPage() {
 
   const addComment = async (e) => {
     e.preventDefault();
+
+    try {
+      const { data } = await axios.post("/api/blog/add-comment", {
+        blog: id,
+        name,
+        content,
+      });
+      if (data.success) {
+        toast.success("Comment added successfully");
+        setName("");
+        setContent("");
+      }
+    } catch (error) {
+      toast.error("Comment is not added");
+      toast.error(error.message);
+    }
   };
+
+  useEffect(() => {
+    fetchBlogData();
+    fetchComments();
+  }, []);
 
   return data ? (
     <div className="relative">
@@ -141,7 +174,7 @@ function BlogPage() {
       <Footer />
     </div>
   ) : (
-   <Loader /> 
+    <Loader />
   );
 }
 

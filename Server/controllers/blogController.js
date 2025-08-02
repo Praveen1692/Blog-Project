@@ -113,7 +113,9 @@ export const togglePublish = async (req, res) => {
   }
 };
 
-export const addComment = async () => {
+export const addComment = async (req,res) => {
+  console.log("Add COmment");
+  
   try {
     const { blog, name, content } = req.body;
     await comment.create({
@@ -132,7 +134,7 @@ export const getBlogComments = async (req, res) => {
   try {
     const { blogId } = req.body;
 
-    const comments = await Comment.find({
+    const comments = await comment.find({
       blog: blogId,
       isApproved: true,
     }).sort({ createdAt: -1 });
