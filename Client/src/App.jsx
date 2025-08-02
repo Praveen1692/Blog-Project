@@ -11,11 +11,12 @@ import ListBlog from "./pages/admin/ListBlog";
 import Comments from "./pages/admin/Comments";
 import Login from "./components/admin/Login";
 import "quill/dist/quill.snow.css";
-
+import { Toaster } from "react-hot-toast";
 function App() {
   return (
     <>
       <div>
+        <Toaster />
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/blog/:id" element={<BlogPage />} />
