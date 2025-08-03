@@ -1,9 +1,43 @@
 import React from "react";
 import { assets } from "../../assets/assets";
+import { useAppContext } from "../../context/AppContext";
+import toast from "react-hot-toast";
 
 function CommentTableItem({ comment, fetchComments }) {
   const { blog, createdAt, _id } = comment;
   const BlogDate = new Date(createdAt);
+
+  const { axios } = useAppContext();
+
+  const approveComment = async () => {
+    try {
+      const { data } = await axios.post("/api/admin/approve-comment", {
+        id: _id,
+      });
+      if (data.success) {
+        toast.success("Comment approved");
+        await fetchComments();
+      } else {
+        toast.error("Failed to approve comment");
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  const deleteComment = async () => {
+    try {
+      const { data } = await axios.post("/api/admin/delete-comment", {
+        id: _id,
+      });
+      if (data.success) {
+        toast.success("Comment deleted");
+        await fetchComments();
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
   return (
     <tr className="order-y border-gray-300">
       <td className="px-6 py-4">
@@ -23,6 +57,7 @@ function CommentTableItem({ comment, fetchComments }) {
         <div className="inline-flex items-center gap-4">
           {!comment.isApproved ? (
             <img
+              onClick={approveComment}
               src={assets.tick_icon}
               alt="Right_Icon"
               className="w-5 hover:scale-110 transition-all cursor-pointer"
@@ -36,6 +71,7 @@ function CommentTableItem({ comment, fetchComments }) {
             src={assets.bin_icon}
             alt="binIcon"
             className="w-5 hover:scale-110 transition-all cursor-pointer"
+            onClick={deleteComment}
           />
         </div>
       </td>

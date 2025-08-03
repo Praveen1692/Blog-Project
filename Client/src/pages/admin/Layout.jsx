@@ -2,10 +2,16 @@ import React from "react";
 import { assets } from "../../assets/assets";
 import { Outlet, useNavigate } from "react-router-dom";
 import Sidebar from "../../components/admin/Sidebar";
+import { useAppContext } from "../../context/AppContext";
 
 function Layout() {
-  const navigate = useNavigate();
-  const handleLogout = () => {};
+  const { axios, setToken, navigate } = useAppContext();
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    axios.defaults.headers.common["Authorization"] = null;
+    setToken(null);
+    navigate("/");
+  };
   return (
     <>
       <div className="flex items-center justify-between py-2 h-[70px] px-4 sm:px-12 border-b border-gray-200">

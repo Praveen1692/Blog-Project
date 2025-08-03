@@ -1,8 +1,9 @@
 import { format } from "path";
 import imagekit from "../configs/imagekit.js";
 import Blog from "../models/Blog.js";
-import fs from "fs";
+import fs, { truncate } from "fs";
 import comment from "../models/Comments.js";
+import main from "../configs/gemini.js";
 
 export const addBlog = async (req, res) => {
   try {
@@ -113,9 +114,9 @@ export const togglePublish = async (req, res) => {
   }
 };
 
-export const addComment = async (req,res) => {
+export const addComment = async (req, res) => {
   console.log("Add COmment");
-  
+
   try {
     const { blog, name, content } = req.body;
     await comment.create({
@@ -134,11 +135,26 @@ export const getBlogComments = async (req, res) => {
   try {
     const { blogId } = req.body;
 
-    const comments = await comment.find({
-      blog: blogId,
-      isApproved: true,
-    }).sort({ createdAt: -1 });
+    const comments = await comment
+      .find({
+        blog: blogId,
+        isApproved: true,
+      })
+      .sort({ createdAt: -1 });
     return res.json({ success: true, comments });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: error.message });
+  }
+};
+
+export const generateContent = async (req, res) => {
+  try {
+    const { prompt } = req.body;
+    const content = await main(
+      prompt + " Generate a blog content for this topic in simple text format. "
+    );
+    return res.json({ success: true, content });
   } catch (error) {
     console.log(error);
     res.json({ success: false, message: error.message });
