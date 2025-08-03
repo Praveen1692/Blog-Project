@@ -40,13 +40,15 @@ export const getAllBlogsAdmin = async (req, res) => {
 };
 
 export const getAllComments = async (req, res) => {
+  console.log("Get All Comment");
+  
   try {
-    const comment = await comment
+    const comments = await comment
       .find({})
       .populate("blog")
       .sort({ createdAt: -1 });
 
-    res.json({ success: true, comment });
+    res.json({ success: true, comments });
   } catch (error) {
     console.error(error);
     res.json({ success: false, message: error.message });

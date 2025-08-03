@@ -19,10 +19,24 @@ function BlogTableItem({ blog, fetchBlogs, index }) {
         toast.success("Blog deleted successfully");
         await fetchBlogs();
       } else {
-        toast.error(data.message); 
+        toast.error(data.message);
       }
     } catch (error) {
       toast.error("Error to delete a blog");
+    }
+  };
+
+  const togglePublish = async () => {
+    try {
+      const { data } = await axios.post("/api/blog/toggle-publish", {
+        id: blog._id,
+      });
+      if (data.success) {
+        toast.success("Blog Toggle successfully");
+        await fetchBlogs();
+      }
+    } catch (error) {
+      toast.error("Error to toggle publish");
     }
   };
 
@@ -48,7 +62,10 @@ function BlogTableItem({ blog, fetchBlogs, index }) {
       </td>
 
       <td className="px-2 py-4 flex text-xs gap-3">
-        <button className="border px-2 py-0.5 mt-1 rounded cursor-pointer ">
+        <button
+          onClick={togglePublish}
+          className="border px-2 py-0.5 mt-1 rounded cursor-pointer "
+        >
           {blog.isPublished ? "Unpublish" : "Publish"}
         </button>
 
@@ -56,6 +73,7 @@ function BlogTableItem({ blog, fetchBlogs, index }) {
           src={assets.cross_icon}
           alt="Delete"
           className="w-8 hover:scale-110 transition-all cursor-pointer"
+          onClick={deleteBlog}
         />
       </td>
     </tr>
