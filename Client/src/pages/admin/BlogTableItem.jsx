@@ -1,7 +1,31 @@
 import React from "react";
 import { assets } from "../../assets/assets";
+import { useAppContext } from "../../context/AppContext";
+import toast from "react-hot-toast";
 
 function BlogTableItem({ blog, fetchBlogs, index }) {
+  const { axios } = useAppContext();
+
+  const deleteBlog = async () => {
+    const confirm = window.confirm(
+      "Are you sure you want to delete this blog?"
+    );
+    if (!confirm) {
+      return;
+    }
+    try {
+      const { data } = await axios.post("/api/blog/delete", { id: blog._id });
+      if (data.success) {
+        toast.success("Blog deleted successfully");
+        await fetchBlogs();
+      } else {
+        toast.error(data.message); 
+      }
+    } catch (error) {
+      toast.error("Error to delete a blog");
+    }
+  };
+
   const { title, createdAt } = blog;
   const BlogDate = new Date(createdAt);
   return (
